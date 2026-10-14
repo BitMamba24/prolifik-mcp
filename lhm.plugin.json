@@ -1,0 +1,13 @@
+{
+  "identifier": "bitmamba24-prolifik-mcp",
+  "name": "Prolifik",
+  "version": "1.0.0",
+  "description": "Cut clips from long videos, render branded short-form video and schedule posts to TikTok, Reels, Shorts and X from any MCP client.",
+  "author": "Prolifik",
+  "authorUrl": "https://getprolifik.com/",
+  "homepage": "https://github.com/BitMamba24/prolifik-mcp",
+  "cloudEndpoint": "https://app.getprolifik.com/mcp",
+  "icon": "https://getprolifik.com/assets/brand/apple-touch-icon.png",
+  "category": "media-generate",
+  "tags": ["video", "clips", "short-form", "social-media", "tiktok", "youtube-shorts", "instagram-reels", "marketing"]
+}
