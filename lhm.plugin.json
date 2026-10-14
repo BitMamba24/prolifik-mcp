@@ -2,12 +2,1943 @@
   "identifier": "bitmamba24-prolifik-mcp",
   "name": "Prolifik",
   "version": "1.0.0",
-  "description": "Cut clips from long videos, render branded short-form video and schedule posts to TikTok, Reels, Shorts and X from any MCP client.",
+  "description": "Cut clips from long videos, render branded short-form video, clone posts that worked and schedule to TikTok, Reels, Shorts and X from any MCP client.",
   "author": "Prolifik",
   "authorUrl": "https://getprolifik.com/",
   "homepage": "https://github.com/BitMamba24/prolifik-mcp",
   "cloudEndpoint": "https://app.getprolifik.com/mcp",
   "icon": "https://getprolifik.com/assets/brand/apple-touch-icon.png",
   "category": "media-generate",
-  "tags": ["video", "clips", "short-form", "social-media", "tiktok", "youtube-shorts", "instagram-reels", "marketing"]
+  "tags": [
+    "video",
+    "clips",
+    "short-form",
+    "social-media",
+    "tiktok",
+    "youtube-shorts",
+    "instagram-reels",
+    "marketing"
+  ],
+  "tools": [
+    {
+      "name": "list_clip_jobs",
+      "description": "List the authenticated Prolifik account's newest Clipper jobs.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "before": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "limit": {
+            "default": 50,
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100
+          }
+        }
+      }
+    },
+    {
+      "name": "get_clip_job",
+      "description": "Get a Clipper job and its generated clips.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "jobId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          }
+        },
+        "required": [
+          "jobId"
+        ]
+      }
+    },
+    {
+      "name": "get_clip_job_status",
+      "description": "Poll a Clipper job's status, progress, and generated clip count.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "jobId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          }
+        },
+        "required": [
+          "jobId"
+        ]
+      }
+    },
+    {
+      "name": "get_clip_minutes",
+      "description": "Read the account's clip-minute balance for the billing period, the plan allowance, and whether a new job can be queued.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "list_clip_publishes",
+      "description": "List recent clip publish records and their current status.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "platform": {
+            "type": "string",
+            "maxLength": 128
+          },
+          "status": {
+            "type": "string",
+            "maxLength": 128
+          },
+          "jobId": {
+            "type": "string",
+            "maxLength": 128
+          }
+        }
+      }
+    },
+    {
+      "name": "create_clip_job",
+      "description": "Queue one video URL, or a batch of up to 10 video URLs, for AI clipping. This consumes the account's clip-minute allowance.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "maxLength": 2048
+          },
+          "urls": {
+            "minItems": 1,
+            "maxItems": 10,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "maxLength": 2048
+            }
+          },
+          "sourceStoragePath": {
+            "type": "string",
+            "maxLength": 500
+          },
+          "sourceTitle": {
+            "type": "string",
+            "maxLength": 300
+          },
+          "sourceChannel": {
+            "type": "string",
+            "maxLength": 300
+          },
+          "numClips": {
+            "default": 3,
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 20
+          },
+          "minDuration": {
+            "default": 30,
+            "type": "integer",
+            "minimum": 5,
+            "maximum": 600
+          },
+          "maxDuration": {
+            "default": 90,
+            "type": "integer",
+            "minimum": 5,
+            "maximum": 600
+          },
+          "category": {
+            "default": "generic",
+            "type": "string",
+            "enum": [
+              "generic",
+              "meme",
+              "sports",
+              "movies"
+            ]
+          },
+          "layout": {
+            "default": "blur",
+            "type": "string",
+            "enum": [
+              "blur",
+              "crop",
+              "smart",
+              "speaker",
+              "smart_crop"
+            ]
+          },
+          "captionStyle": {
+            "default": "classic",
+            "type": "string",
+            "enum": [
+              "classic",
+              "karaoke",
+              "bold",
+              "minimal",
+              "neon",
+              "none"
+            ]
+          },
+          "aspectRatio": {
+            "default": "9:16",
+            "type": "string",
+            "enum": [
+              "9:16",
+              "1:1",
+              "16:9",
+              "4:5"
+            ]
+          },
+          "userPrompt": {
+            "default": "",
+            "type": "string",
+            "maxLength": 2000
+          },
+          "options": {
+            "type": "object",
+            "properties": {
+              "language": {
+                "type": "string",
+                "maxLength": 35
+              },
+              "speaker_tracking": {
+                "type": "boolean"
+              },
+              "auto_zoom": {
+                "type": "boolean"
+              },
+              "emoji_captions": {
+                "type": "boolean"
+              },
+              "remove_fillers": {
+                "type": "boolean"
+              },
+              "visual_selection": {
+                "type": "boolean"
+              },
+              "multicam": {
+                "type": "boolean"
+              },
+              "sfx_hits": {
+                "type": "boolean"
+              },
+              "cutaways": {
+                "type": "boolean"
+              },
+              "include_logo": {
+                "type": "boolean"
+              },
+              "brand_kit": {
+                "type": "object",
+                "properties": {
+                  "primary": {
+                    "type": "string",
+                    "maxLength": 7
+                  },
+                  "secondary": {
+                    "type": "string",
+                    "maxLength": 7
+                  },
+                  "font": {
+                    "type": "string",
+                    "maxLength": 64
+                  }
+                }
+              },
+              "format": {
+                "description": "What kind of video it is; picks the moment-selection rules. podcast = interviews, reaction = streamer reacting to a game/video, casino = slots/casino stream, broadcast = sports with no reaction cam.",
+                "type": "string",
+                "enum": [
+                  "generic",
+                  "podcast",
+                  "reaction",
+                  "casino",
+                  "broadcast",
+                  "meme",
+                  "cinematic"
+                ]
+              },
+              "quality": {
+                "type": "object",
+                "properties": {
+                  "brand_safety": {
+                    "description": "gambling = exclude rival brands, sexual/addiction/underage content, 'site doesn't pay' talk.",
+                    "type": "string",
+                    "enum": [
+                      "standard",
+                      "gambling"
+                    ]
+                  },
+                  "client_rules": {
+                    "description": "The brand's own rules for its clips, followed by the moment picker.",
+                    "type": "string",
+                    "maxLength": 2000
+                  },
+                  "banned_words": {
+                    "maxItems": 50,
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "maxLength": 60
+                    }
+                  },
+                  "vocabulary": {
+                    "description": "Correct spellings of names, brands and terms the captions must get right, e.g. [\"Lamine Yamal\", \"Vin\u00edcius J\u00fanior\", \"Prolifik\"].",
+                    "maxItems": 100,
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "maxLength": 60
+                    }
+                  },
+                  "dictionary": {
+                    "description": "Caption fixes, misheard word to correct spelling, e.g. {\"prolific\": \"Prolifik\"}.",
+                    "type": "object",
+                    "propertyNames": {
+                      "type": "string",
+                      "maxLength": 60
+                    },
+                    "additionalProperties": {
+                      "type": "string",
+                      "maxLength": 60
+                    }
+                  },
+                  "key_moments": {
+                    "description": "auto (default) = goals, red cards, big wins and similar always get their own clip; off = no such guarantee.",
+                    "type": "string",
+                    "enum": [
+                      "auto",
+                      "off"
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "idempotencyKey": {
+            "description": "Recommended: makes a retried call return the original job instead of queueing a second one.",
+            "type": "string",
+            "minLength": 8,
+            "maxLength": 128
+          }
+        }
+      }
+    },
+    {
+      "name": "create_clip_upload_url",
+      "description": "Create a 15-minute presigned PUT URL for a video source. After the upload, the returned path can be used as sourceStoragePath when queueing a Clipper job.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "fileName": {
+            "default": "source.mp4",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 255
+          },
+          "jobId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          }
+        }
+      }
+    },
+    {
+      "name": "cancel_clip_job",
+      "description": "Cancel a queued or in-progress Clipper job.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "jobId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          }
+        },
+        "required": [
+          "jobId"
+        ]
+      }
+    },
+    {
+      "name": "publish_clip",
+      "description": "Publish or schedule a generated clip to a connected social account. This creates an externally visible post.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "clipId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "connectionId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "scheduledFor": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "idempotencyKey": {
+            "type": "string",
+            "minLength": 8,
+            "maxLength": 128
+          }
+        },
+        "required": [
+          "clipId",
+          "connectionId"
+        ]
+      }
+    },
+    {
+      "name": "retry_clip_publish",
+      "description": "Retry a failed clip publish record.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "publishId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          }
+        },
+        "required": [
+          "publishId"
+        ]
+      }
+    },
+    {
+      "name": "list_publish_destinations",
+      "description": "List active social accounts available to the account's active brand.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "brandId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      }
+    },
+    {
+      "name": "list_brands",
+      "description": "List brands in the Prolifik workspace and show which are active under the account plan.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "get_brand",
+      "description": "Get a brand's voice, audience, colors, logo, and posting schedule.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "brandId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "required": [
+          "brandId"
+        ]
+      }
+    },
+    {
+      "name": "list_content_sources",
+      "description": "List analyzed source URLs available to a brand for grounded content production.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "brandId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "before": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "limit": {
+            "default": 50,
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100
+          }
+        },
+        "required": [
+          "brandId"
+        ]
+      }
+    },
+    {
+      "name": "list_media_library",
+      "description": "List the user's own media library: videos they uploaded in the Prolifik app (including demo recordings saved from Content Studio) and, for keys with studio:read, AI Studio outputs, newest first. Each item's `key` is what a Video Hook & Demo content job accepts as demoVideoKey or hookVideoKey; only items with usableForHookDemo qualify.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "default": "video",
+            "type": "string",
+            "enum": [
+              "video",
+              "image"
+            ]
+          },
+          "before": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "limit": {
+            "default": 50,
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100
+          }
+        }
+      }
+    },
+    {
+      "name": "get_usage",
+      "description": "This month's plan usage: videos kept (downloads, schedules, posts; each piece counts once) and renders used (every successful render, including retries, regenerations and edits), with limits and reset dates. Each content piece is one render, and a content job bigger than renders.remaining is refused. On a free trial, trial carries the end date and the content-job videos left.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "get_content_source",
+      "description": "Poll one source's analysis status and retrieve its structured content analysis.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "sourceId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "required": [
+          "sourceId"
+        ]
+      }
+    },
+    {
+      "name": "list_content_jobs",
+      "description": "List asynchronous Prolifik content-production jobs.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "brandId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "before": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "limit": {
+            "default": 50,
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100
+          }
+        }
+      }
+    },
+    {
+      "name": "get_content_job",
+      "description": "Poll a content job and retrieve its scripts plus signed rendered-media URLs.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "jobId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "required": [
+          "jobId"
+        ]
+      }
+    },
+    {
+      "name": "list_content",
+      "description": "List generated content pieces and their current render status.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "brandId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "format": {
+            "type": "string",
+            "maxLength": 64
+          },
+          "status": {
+            "type": "string",
+            "maxLength": 64
+          },
+          "before": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "limit": {
+            "default": 50,
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100
+          }
+        }
+      }
+    },
+    {
+      "name": "get_content_piece",
+      "description": "Get one content piece, its script, and signed rendered-media URLs.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "pieceId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "required": [
+          "pieceId"
+        ]
+      }
+    },
+    {
+      "name": "list_content_publishes",
+      "description": "List scheduled, publishing, posted, and failed content publication records.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "pieceId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "status": {
+            "type": "string",
+            "maxLength": 64
+          },
+          "before": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "limit": {
+            "default": 50,
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100
+          }
+        }
+      }
+    },
+    {
+      "name": "get_content_publish",
+      "description": "Get one content publication record and its current provider status.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "publishId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "required": [
+          "publishId"
+        ]
+      }
+    },
+    {
+      "name": "list_studio_models",
+      "description": "List the image and video models, supported inputs, and credit prices available in AI Studio.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "get_studio_credits",
+      "description": "Read the account's current AI Studio credit balance and plan.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "list_studio_generations",
+      "description": "List recent image, video, and talking-head generation jobs.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "queued",
+              "running",
+              "complete",
+              "failed"
+            ]
+          },
+          "before": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "limit": {
+            "default": 50,
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100
+          }
+        }
+      }
+    },
+    {
+      "name": "get_studio_generation",
+      "description": "Poll one AI Studio generation and retrieve signed output URLs when it completes.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "generationId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "required": [
+          "generationId"
+        ]
+      }
+    },
+    {
+      "name": "list_influencers",
+      "description": "List reusable AI influencers and their base-image generation status.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "get_influencer",
+      "description": "Get one reusable AI influencer and signed image-library URLs.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "influencerId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "required": [
+          "influencerId"
+        ]
+      }
+    },
+    {
+      "name": "estimate_clone",
+      "description": "Paste a TikTok or Instagram link (photo carousel or wall-of-text video). Prolifik rebuilds it as variations in the brand's voice: paraphrased copy, subtly changed visuals, the brand's logos. Variations stay on the cloning job until saved to the Library or scheduled. This quotes what one clone would cost in AI credits, spending nothing. Before the post is downloaded the slide count is unknown, so a photo link is quoted at six slides and says so.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "maxLength": 2048
+          },
+          "variations": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 8
+          }
+        },
+        "required": [
+          "url"
+        ]
+      }
+    },
+    {
+      "name": "list_clone_jobs",
+      "description": "Paste a TikTok or Instagram link (photo carousel or wall-of-text video). Prolifik rebuilds it as variations in the brand's voice: paraphrased copy, subtly changed visuals, the brand's logos. Variations stay on the cloning job until saved to the Library or scheduled. This lists the account's cloning jobs, newest first.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "brandId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "pending",
+              "ingesting",
+              "analysing",
+              "transforming",
+              "ready",
+              "failed"
+            ]
+          },
+          "before": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "limit": {
+            "default": 50,
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100
+          }
+        }
+      }
+    },
+    {
+      "name": "get_clone_job",
+      "description": "Paste a TikTok or Instagram link (photo carousel or wall-of-text video). Prolifik rebuilds it as variations in the brand's voice: paraphrased copy, subtly changed visuals, the brand's logos. Variations stay on the cloning job until saved to the Library or scheduled. This returns one job: its status, the analysed source post, and every variation built so far. Poll it after clone_post until status is \"ready\".",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "jobId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "required": [
+          "jobId"
+        ]
+      }
+    },
+    {
+      "name": "create_brand",
+      "description": "Create a brand from its website and queue asynchronous voice and audience enrichment. The brand is returned at once; its enrichment fields fill in when the analysis finishes.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "maxLength": 2048,
+            "format": "uri"
+          },
+          "idempotencyKey": {
+            "type": "string",
+            "minLength": 8,
+            "maxLength": 128
+          }
+        },
+        "required": [
+          "url",
+          "idempotencyKey"
+        ]
+      }
+    },
+    {
+      "name": "update_brand",
+      "description": "Update a brand's name, voice, visual identity, audience, or posting schedule.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "brandId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 200
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "voice": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 5000
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "primaryColors": {
+            "maxItems": 10,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "maxLength": 32
+            }
+          },
+          "logoUrl": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 2048
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 5000
+          },
+          "targetAudience": {
+            "type": "string",
+            "maxLength": 5000
+          },
+          "postingSchedule": {
+            "anyOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "days": {
+                    "type": "array",
+                    "items": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 6
+                    }
+                  },
+                  "times": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "timezone": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 100
+                  }
+                },
+                "required": [
+                  "days",
+                  "times",
+                  "timezone"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "brandId"
+        ]
+      }
+    },
+    {
+      "name": "create_content_source",
+      "description": "Queue a URL for scraping and AI analysis. The source is returned at once with a status that becomes ready when the analysis finishes.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "brandId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "url": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 2048
+          },
+          "title": {
+            "type": "string",
+            "maxLength": 300
+          },
+          "idempotencyKey": {
+            "type": "string",
+            "minLength": 8,
+            "maxLength": 128
+          }
+        },
+        "required": [
+          "brandId",
+          "url",
+          "idempotencyKey"
+        ]
+      }
+    },
+    {
+      "name": "update_content_source",
+      "description": "Rename a content source or replace its notes.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "sourceId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 300
+          },
+          "notes": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 5000
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "sourceId"
+        ]
+      }
+    },
+    {
+      "name": "reanalyze_content_source",
+      "description": "Re-run extraction for a content source, optionally against a corrected URL.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "sourceId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "url": {
+            "type": "string",
+            "maxLength": 2048
+          }
+        },
+        "required": [
+          "sourceId"
+        ]
+      }
+    },
+    {
+      "name": "delete_content_source",
+      "description": "Delete a content source. Existing content produced from it is kept.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "sourceId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "required": [
+          "sourceId"
+        ]
+      }
+    },
+    {
+      "name": "create_content_upload_url",
+      "description": "Create a 30-minute presigned PUT URL for a Video Hook & Demo recording (mp4/mov/webm, max 100 MB; demo max 60 s, own hook max 15 s). PUT the file bytes to uploadUrl with the same Content-Type header (it is signed). The returned key is what a Video Hook & Demo content job accepts as demoVideoKey (or hookVideoKey for your own hook clip).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "contentType": {
+            "type": "string",
+            "enum": [
+              "video/mp4",
+              "video/quicktime",
+              "video/webm"
+            ]
+          }
+        },
+        "required": [
+          "contentType"
+        ]
+      }
+    },
+    {
+      "name": "create_content_job",
+      "description": "Queue an asynchronous, rendered content batch (up to 50 pieces). The job is returned at once; its status moves to ready_for_review, completed, or partially_failed when rendering ends. Each piece uses one render from the plan's monthly render budget; a job larger than the renders left is refused. talking-head (Video Hook & Demo) needs the user's own product recording as demoVideoKey: either a video already in their Prolifik media library or a file uploaded to a content upload URL. Each piece is a hook clip, then the demo, with the AI-written caption on top; the hook comes from the library unless hookVideoKey is given. The recordings' own audio is replaced by a library music track (assetFilters.audioMood; none = silent).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "brandId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "contentSourceId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "format": {
+            "type": "string",
+            "enum": [
+              "carousel",
+              "kinetic-type",
+              "scene-swap",
+              "b-roll",
+              "caption-card",
+              "talking-head"
+            ]
+          },
+          "count": {
+            "default": 1,
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50
+          },
+          "deliveryMode": {
+            "default": "download",
+            "type": "string",
+            "enum": [
+              "download",
+              "schedule"
+            ]
+          },
+          "includeLogo": {
+            "default": false,
+            "type": "boolean"
+          },
+          "mentionBrand": {
+            "default": true,
+            "type": "boolean"
+          },
+          "demoVideoKey": {
+            "description": "talking-head only, required there: the product recording that plays after the hook (max 60 s). A video key from list_media_library, or the key from create_content_upload_url.",
+            "type": "string",
+            "maxLength": 1024
+          },
+          "hookVideoKey": {
+            "description": "talking-head only, optional: your own hook clip, max 15 s (a media library video key, e.g. an AI Studio talking head, or an upload key). Omit to use library hooks.",
+            "type": "string",
+            "maxLength": 1024
+          },
+          "customTexts": {
+            "description": "Your own copy per post, used verbatim instead of AI-written text. One entry per post (null = AI writes that one); carousel entries use `slides`, every other format uses `text`.",
+            "maxItems": 50,
+            "type": "array",
+            "items": {
+              "anyOf": [
+                {
+                  "type": "object",
+                  "properties": {
+                    "text": {
+                      "type": "string",
+                      "maxLength": 2000
+                    },
+                    "slides": {
+                      "maxItems": 10,
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "maxLength": 2000
+                      }
+                    }
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "assetFilters": {
+            "description": "Per-format library filters: carousel (theme, personTags), kinetic-type (personTags, audioMood), b-roll (theme, personTags, audioMood), scene-swap (memePersonTags, backgroundPersonTags, memeReactions), talking-head (audioMood). caption-card takes none.",
+            "type": "object",
+            "properties": {
+              "theme": {
+                "type": "string",
+                "maxLength": 64
+              },
+              "personTags": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "enum": [
+                    "Woman",
+                    "Man",
+                    "Animal",
+                    "Landscape/Building"
+                  ]
+                }
+              },
+              "audioMood": {
+                "type": "string",
+                "enum": [
+                  "none",
+                  "upbeat",
+                  "chill",
+                  "cinematic",
+                  "motivational",
+                  "dramatic"
+                ]
+              },
+              "memePersonTags": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "enum": [
+                    "Woman",
+                    "Man"
+                  ]
+                }
+              },
+              "backgroundPersonTags": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "enum": [
+                    "Woman",
+                    "Man",
+                    "Animal",
+                    "Landscape/Building"
+                  ]
+                }
+              },
+              "memeReactions": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "enum": [
+                    "smug_vindication",
+                    "caught_in_the_act",
+                    "instant_refusal",
+                    "blank_incomprehension",
+                    "quiet_trauma",
+                    "two_block_reaction"
+                  ]
+                }
+              }
+            }
+          },
+          "idempotencyKey": {
+            "type": "string",
+            "minLength": 8,
+            "maxLength": 128
+          }
+        },
+        "required": [
+          "brandId",
+          "format",
+          "idempotencyKey"
+        ]
+      }
+    },
+    {
+      "name": "cancel_content_job",
+      "description": "Cancel a queued or generating content-production job.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "jobId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "required": [
+          "jobId"
+        ]
+      }
+    },
+    {
+      "name": "update_content_piece",
+      "description": "Edit a generated piece's copy or logo setting and queue a replacement render. The piece shows the new render once it finishes.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "pieceId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "hook": {
+            "type": "string",
+            "maxLength": 2000
+          },
+          "body": {
+            "type": "string",
+            "maxLength": 2000
+          },
+          "cta": {
+            "type": "string",
+            "maxLength": 300
+          },
+          "slides": {
+            "maxItems": 10,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "maxLength": 2000
+            }
+          },
+          "includeLogo": {
+            "type": "boolean"
+          },
+          "idempotencyKey": {
+            "type": "string",
+            "minLength": 8,
+            "maxLength": 128
+          }
+        },
+        "required": [
+          "pieceId",
+          "idempotencyKey"
+        ]
+      }
+    },
+    {
+      "name": "regenerate_content_piece",
+      "description": "Replace a failed job piece with a freshly written script and new library assets. Re-rendering the existing script is a separate retry action.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "pieceId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "idempotencyKey": {
+            "type": "string",
+            "minLength": 8,
+            "maxLength": 128
+          }
+        },
+        "required": [
+          "pieceId",
+          "idempotencyKey"
+        ]
+      }
+    },
+    {
+      "name": "delete_content_piece",
+      "description": "Delete a content piece and its stored render. Queued provider posts for it are cancelled first.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "pieceId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "required": [
+          "pieceId"
+        ]
+      }
+    },
+    {
+      "name": "retry_content_render",
+      "description": "Retry the render worker for a failed content piece.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "pieceId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "idempotencyKey": {
+            "type": "string",
+            "minLength": 8,
+            "maxLength": 128
+          }
+        },
+        "required": [
+          "pieceId",
+          "idempotencyKey"
+        ]
+      }
+    },
+    {
+      "name": "create_studio_upload_url",
+      "description": "Create a presigned PUT URL for a source/reference image. Upload the bytes, then pass the returned key to create_studio_generation.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "contentType": {
+            "type": "string",
+            "enum": [
+              "image/png",
+              "image/jpeg",
+              "image/webp"
+            ]
+          }
+        },
+        "required": [
+          "contentType"
+        ]
+      }
+    },
+    {
+      "name": "create_studio_generation",
+      "description": "Queue an image, video, or talking-head AI generation. Poll with get_studio_generation.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "kind": {
+            "type": "string",
+            "enum": [
+              "image",
+              "video",
+              "talking-head"
+            ]
+          },
+          "modelKey": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          },
+          "prompt": {
+            "type": "string",
+            "maxLength": 5000
+          },
+          "influencerId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "params": {
+            "type": "object",
+            "properties": {
+              "aspectRatio": {
+                "type": "string",
+                "maxLength": 16
+              },
+              "resolution": {
+                "type": "string",
+                "enum": [
+                  "480p",
+                  "720p",
+                  "1080p"
+                ]
+              },
+              "numImages": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "const": 1
+                  },
+                  {
+                    "type": "number",
+                    "const": 4
+                  }
+                ]
+              },
+              "template": {
+                "type": "string",
+                "enum": [
+                  "none",
+                  "iphone-selfie",
+                  "shocked"
+                ]
+              },
+              "enhance": {
+                "description": "Image only: rewrite the prompt into a detailed photographic brief before generating. The prompt as sent is returned in params.enhancedPrompt.",
+                "type": "boolean"
+              },
+              "imageKey": {
+                "type": "string",
+                "maxLength": 1024
+              },
+              "motionPrompt": {
+                "type": "string",
+                "maxLength": 5000
+              },
+              "durationSec": {
+                "description": "One of the model's durationsSec from list_studio_models.",
+                "type": "integer",
+                "minimum": 3,
+                "maximum": 10
+              },
+              "generateAudio": {
+                "type": "boolean"
+              },
+              "script": {
+                "type": "string",
+                "maxLength": 5000
+              },
+              "language": {
+                "type": "string",
+                "maxLength": 100
+              },
+              "captions": {
+                "type": "boolean"
+              }
+            }
+          },
+          "idempotencyKey": {
+            "type": "string",
+            "minLength": 8,
+            "maxLength": 128
+          }
+        },
+        "required": [
+          "kind",
+          "modelKey",
+          "params",
+          "idempotencyKey"
+        ]
+      }
+    },
+    {
+      "name": "create_influencer",
+      "description": "Create a reusable AI influencer and queue its base portrait. Poll with get_influencer.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          },
+          "gender": {
+            "type": "string",
+            "enum": [
+              "male",
+              "female"
+            ]
+          },
+          "age": {
+            "default": 25,
+            "type": "integer",
+            "minimum": 18,
+            "maximum": 60
+          },
+          "ethnicity": {
+            "type": "string",
+            "maxLength": 100
+          },
+          "details": {
+            "type": "string",
+            "maxLength": 1000
+          },
+          "brandId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "idempotencyKey": {
+            "type": "string",
+            "minLength": 8,
+            "maxLength": 128
+          }
+        },
+        "required": [
+          "name",
+          "gender",
+          "idempotencyKey"
+        ]
+      }
+    },
+    {
+      "name": "regenerate_influencer",
+      "description": "Replace an influencer's base portrait with a newly generated person.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "influencerId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "instructions": {
+            "type": "string",
+            "maxLength": 1000
+          },
+          "idempotencyKey": {
+            "type": "string",
+            "minLength": 8,
+            "maxLength": 128
+          }
+        },
+        "required": [
+          "influencerId",
+          "idempotencyKey"
+        ]
+      }
+    },
+    {
+      "name": "delete_influencer",
+      "description": "Delete an AI influencer and its stored portrait/library images.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "influencerId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "required": [
+          "influencerId"
+        ]
+      }
+    },
+    {
+      "name": "clone_post",
+      "description": "Paste a TikTok or Instagram link (photo carousel or wall-of-text video). Prolifik rebuilds it as variations in the brand's voice: paraphrased copy, subtly changed visuals, the brand's logos. Variations stay on the cloning job until saved to the Library or scheduled. The job is ASYNCHRONOUS: this returns as soon as it is queued, so poll get_clone_job until status is \"ready\" (or \"failed\") before reading its variations. Each variation is a content piece: keep one with save_clone_variation_to_library, then schedule or post it with publish_content (pass scheduledAt to schedule it). Spends AI credits \u2014 quote the cost first with estimate_clone.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "maxLength": 2048
+          },
+          "brandId": {
+            "description": "Defaults to the account's active brand.",
+            "type": "string",
+            "format": "uuid"
+          },
+          "variations": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 8
+          },
+          "mentionBrand": {
+            "description": "Name the brand in the rewritten copy instead of only showing its logo.",
+            "type": "boolean"
+          },
+          "idempotencyKey": {
+            "type": "string",
+            "minLength": 8,
+            "maxLength": 128
+          }
+        },
+        "required": [
+          "url",
+          "idempotencyKey"
+        ]
+      }
+    },
+    {
+      "name": "add_clone_variations",
+      "description": "Paste a TikTok or Instagram link (photo carousel or wall-of-text video). Prolifik rebuilds it as variations in the brand's voice: paraphrased copy, subtly changed visuals, the brand's logos. Variations stay on the cloning job until saved to the Library or scheduled. This builds MORE variations on a job that is already analysed \u2014 cheaper than a new clone, because the post is downloaded and read only once. Asynchronous: poll get_clone_job. Spends AI credits, so pass an idempotencyKey when retrying a call whose answer you never saw.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "jobId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "variations": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 8
+          },
+          "idempotencyKey": {
+            "description": "Pass one when retrying a call you never saw the answer to.",
+            "type": "string",
+            "minLength": 8,
+            "maxLength": 128
+          }
+        },
+        "required": [
+          "jobId",
+          "variations"
+        ]
+      }
+    },
+    {
+      "name": "localize_clone_variations",
+      "description": "Paste a TikTok or Instagram link (photo carousel or wall-of-text video). Prolifik rebuilds it as variations in the brand's voice: paraphrased copy, subtly changed visuals, the brand's logos. Variations stay on the cloning job until saved to the Library or scheduled. This TRANSLATES finished variations into other languages \u2014 each language is a new audience for a hook that already works. Every (variation, language) becomes a new variation on the same job, built on the original's own background (no new images), with app and brand names kept verbatim and the caption and hashtags localised. Costs 3 AI credits per translation, reserved up front; translations that fail are refunded. Omit pieceIds to translate every finished original variation; pairs that already exist are skipped. Polish and Turkish work on carousel variations only. Asynchronous: poll get_clone_job \u2014 translated variations carry language and localizedFrom.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "jobId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "languages": {
+            "minItems": 1,
+            "maxItems": 9,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "es",
+                "pt-BR",
+                "fr",
+                "de",
+                "it",
+                "nl",
+                "pl",
+                "tr",
+                "id"
+              ]
+            }
+          },
+          "pieceIds": {
+            "description": "Variations to translate. Omit for every finished original variation.",
+            "minItems": 1,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          "idempotencyKey": {
+            "type": "string",
+            "minLength": 8,
+            "maxLength": 128
+          }
+        },
+        "required": [
+          "jobId",
+          "languages",
+          "idempotencyKey"
+        ]
+      }
+    },
+    {
+      "name": "retry_clone_job",
+      "description": "Paste a TikTok or Instagram link (photo carousel or wall-of-text video). Prolifik rebuilds it as variations in the brand's voice: paraphrased copy, subtly changed visuals, the brand's logos. Variations stay on the cloning job until saved to the Library or scheduled. This re-runs a FAILED job that has no variations, from the paste. Refused for a job that already has variations (use add_clone_variations instead) and for a post the transform still cannot rebuild. Spends AI credits, so pass an idempotencyKey when retrying a call whose answer you never saw.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "jobId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "idempotencyKey": {
+            "description": "Pass one when retrying a call you never saw the answer to.",
+            "type": "string",
+            "minLength": 8,
+            "maxLength": 128
+          }
+        },
+        "required": [
+          "jobId"
+        ]
+      }
+    },
+    {
+      "name": "delete_clone_job",
+      "description": "Paste a TikTok or Instagram link (photo carousel or wall-of-text video). Prolifik rebuilds it as variations in the brand's voice: paraphrased copy, subtly changed visuals, the brand's logos. Variations stay on the cloning job until saved to the Library or scheduled. This deletes the job. Variations already saved to the Library survive it.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "jobId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "required": [
+          "jobId"
+        ]
+      }
+    },
+    {
+      "name": "save_clone_variation_to_library",
+      "description": "Paste a TikTok or Instagram link (photo carousel or wall-of-text video). Prolifik rebuilds it as variations in the brand's voice: paraphrased copy, subtly changed visuals, the brand's logos. Variations stay on the cloning job until saved to the Library or scheduled. This keeps one finished variation: it is admitted to the Library, where list_content finds it and publish_content can schedule or post it.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "pieceId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "required": [
+          "pieceId"
+        ]
+      }
+    },
+    {
+      "name": "publish_content",
+      "description": "Publish a rendered content piece now, or schedule it by supplying scheduledAt. This creates an externally visible social post.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "brandId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "pieceId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "connectionIds": {
+            "minItems": 1,
+            "maxItems": 10,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          "caption": {
+            "default": "",
+            "type": "string",
+            "maxLength": 2200
+          },
+          "hashtags": {
+            "default": [],
+            "maxItems": 30,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "maxLength": 100
+            }
+          },
+          "scheduledAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "aiGenerated": {
+            "description": "Publish with the synthetic-media disclosure (TikTok AI label, 'Made with AI' caption line). Defaults from the piece's media.",
+            "type": "boolean"
+          },
+          "idempotencyKey": {
+            "type": "string",
+            "minLength": 8,
+            "maxLength": 128
+          }
+        },
+        "required": [
+          "brandId",
+          "pieceId",
+          "connectionIds",
+          "idempotencyKey"
+        ]
+      }
+    },
+    {
+      "name": "distribute_clone_job",
+      "description": "Paste a TikTok or Instagram link (photo carousel or wall-of-text video). Prolifik rebuilds it as variations in the brand's voice: paraphrased copy, subtly changed visuals, the brand's logos. Variations stay on the cloning job until saved to the Library or scheduled. This spreads DIFFERENT variations of one cloning job across the brand's social accounts at staggered times: every account gets its own variation, and the same variation is never posted to two accounts (or twice). Surplus variations go out on the next day(s), one per account per day, and an account-day that already has a post from this job is skipped, so calling this again only fills the gaps. Originals go out before translated variations (languages narrows it). A carousel is never sent to YouTube. Either pass socialAccountIds + startAt (+ spacingMinutes) and let the server plan it, or pass an explicit plan of { pieceId, socialAccountId, scheduledAt } entries (pieceIds from get_clone_job, account ids from list_publish_destinations). Variations must be rendered and not already scheduled. Each post uses that variation's own caption. Creates externally visible scheduled posts and uses one monthly video per variation; returns per-entry results.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "jobId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "socialAccountIds": {
+            "description": "Server-planned mode: the accounts to spread across, in stagger order.",
+            "minItems": 1,
+            "maxItems": 20,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          "startAt": {
+            "description": "Server-planned mode: when the first account posts.",
+            "type": "string",
+            "format": "date-time"
+          },
+          "spacingMinutes": {
+            "description": "Default 45.",
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 1440
+          },
+          "jitterMinutes": {
+            "description": "Default 10 (\u00b1).",
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 30
+          },
+          "languages": {
+            "description": "Server-planned mode: which variations to hand out \u2014 \"original\" for the untranslated ones, or translation language codes. Omitted: originals first, translations once the originals run out.",
+            "minItems": 1,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "original",
+                "es",
+                "pt-BR",
+                "fr",
+                "de",
+                "it",
+                "nl",
+                "pl",
+                "tr",
+                "id"
+              ]
+            }
+          },
+          "timeZone": {
+            "description": "IANA zone the one-post-per-account-per-day rule is counted in. Default UTC.",
+            "type": "string",
+            "maxLength": 64
+          },
+          "plan": {
+            "description": "Explicit mode: exactly what to schedule. Omit socialAccountIds/startAt.",
+            "minItems": 1,
+            "maxItems": 50,
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "pieceId": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "socialAccountId": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "scheduledAt": {
+                  "type": "string",
+                  "format": "date-time"
+                }
+              },
+              "required": [
+                "pieceId",
+                "socialAccountId",
+                "scheduledAt"
+              ]
+            }
+          },
+          "idempotencyKey": {
+            "type": "string",
+            "minLength": 8,
+            "maxLength": 128
+          }
+        },
+        "required": [
+          "jobId",
+          "idempotencyKey"
+        ]
+      }
+    },
+    {
+      "name": "update_content_publish",
+      "description": "Update the caption or hashtags of content that has not posted yet.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "publishId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "caption": {
+            "type": "string",
+            "maxLength": 2200
+          },
+          "hashtags": {
+            "maxItems": 30,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "maxLength": 100
+            }
+          }
+        },
+        "required": [
+          "publishId"
+        ]
+      }
+    },
+    {
+      "name": "cancel_content_publish",
+      "description": "Cancel a not-yet-published content post at the provider and refund its quota unit when applicable.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "publishId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "required": [
+          "publishId"
+        ]
+      }
+    }
+  ]
 }
